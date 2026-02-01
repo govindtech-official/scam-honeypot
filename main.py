@@ -4,8 +4,7 @@ import re
 
 app = FastAPI()
 
-# 🔐 YOUR API KEY (CHANGE IF YOU WANT)
-API_KEY = "my-secret-key-123"
+API_KEY = "Key-2607"
 
 
 class ScamRequest(BaseModel):
@@ -56,3 +55,4 @@ def receive_message(
         "agent_reply": reply,
         "extracted_intelligence": intel
     }
+
