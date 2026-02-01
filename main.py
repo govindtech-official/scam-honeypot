@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 import re
 
 app = FastAPI()
+
+# 🔐 YOUR API KEY (CHANGE IF YOU WANT)
+API_KEY = "my-secret-key-123"
+
 
 class ScamRequest(BaseModel):
     conversation_id: str
@@ -31,12 +35,18 @@ def extract_intelligence(text: str):
 
 
 @app.post("/scam")
-def receive_message(data: ScamRequest):
-    scam = is_scam(data.message)
+def receive_message(
+    data: ScamRequest,
+    x_api_key: str = Header(None)
+):
+    # 🔐 API KEY CHECK
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API Key")
 
-    reply = None
+    scam = is_scam(data.message)
     intel = extract_intelligence(data.message)
 
+    reply = None
     if scam:
         reply = "I am confused, which bank is this about?"
 
